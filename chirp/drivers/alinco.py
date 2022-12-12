@@ -96,7 +96,7 @@ def tohex(data):
 class AlincoStyleRadio(chirp_common.CloneModeRadio):
     """Base class for all known Alinco radios"""
     _memsize = 0
-    _model = "NONE"
+    _model = b"NONE"
     NEEDS_COMPAT_SERIAL = False
 
     def _send(self, data):
@@ -138,7 +138,7 @@ class AlincoStyleRadio(chirp_common.CloneModeRadio):
     def _download(self, limit):
         self._identify()
 
-        data = ""
+        data = b""
         for addr in range(0, limit, 16):
             data += self._download_chunk(addr)
             time.sleep(0.1)
@@ -412,7 +412,7 @@ class DR03Radio(DRx35Radio):
     VENDOR = "Alinco"
     MODEL = "DR03T"
 
-    _model = "DR135"
+    _model = b"DR135"
     _memsize = 4096
     _range = [(28000000, 29695000)]
 
@@ -428,7 +428,7 @@ class DR06Radio(DRx35Radio):
     VENDOR = "Alinco"
     MODEL = "DR06T"
 
-    _model = "DR435"
+    _model = b"DR435"
     _memsize = 4096
     _range = [(50000000, 53995000)]
 
@@ -444,7 +444,7 @@ class DR135Radio(DRx35Radio):
     VENDOR = "Alinco"
     MODEL = "DR135T"
 
-    _model = "DR135"
+    _model = b"DR135"
     _memsize = 4096
     _range = [(118000000, 173000000)]
 
@@ -460,7 +460,7 @@ class DR235Radio(DRx35Radio):
     VENDOR = "Alinco"
     MODEL = "DR235T"
 
-    _model = "DR235"
+    _model = b"DR235"
     _memsize = 4096
     _range = [(216000000, 280000000)]
 
@@ -476,7 +476,7 @@ class DR435Radio(DRx35Radio):
     VENDOR = "Alinco"
     MODEL = "DR435T"
 
-    _model = "DR435"
+    _model = b"DR435"
     _memsize = 4096
     _range = [(350000000, 511000000)]
 
@@ -492,7 +492,7 @@ class DJ596Radio(DRx35Radio):
     VENDOR = "Alinco"
     MODEL = "DJ596"
 
-    _model = "DJ596"
+    _model = b"DJ596"
     _memsize = 4096
     _range = [(136000000, 174000000), (400000000, 511000000)]
     _power_levels = [chirp_common.PowerLevel("Low", watts=1.00),
@@ -510,7 +510,7 @@ class JT220MRadio(DRx35Radio):
     VENDOR = "Jetstream"
     MODEL = "JT220M"
 
-    _model = "DR136"
+    _model = b"DR136"
     _memsize = 8192
     _range = [(216000000, 280000000)]
 
@@ -526,7 +526,7 @@ class DJ175Radio(DRx35Radio):
     VENDOR = "Alinco"
     MODEL = "DJ175"
 
-    _model = "DJ175"
+    _model = b"DJ175"
     _memsize = 6896
     _range = [(136000000, 174000000), (400000000, 511000000)]
     _power_levels = [
