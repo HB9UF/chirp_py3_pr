@@ -113,22 +113,21 @@ class AlincoStyleRadio(chirp_common.CloneModeRadio):
         if addr % 16:
             raise Exception("Addr 0x%04x not on 16-byte boundary" % addr)
 
-        cmd = "AL~F%04XR\r\n" % addr
+        cmd = b"AL~F%04XR\r\n" % addr
         self._send(cmd)
 
         resp = self._read(RLENGTH).strip()
         if len(resp) == 0:
             raise errors.RadioError("No response from radio")
-        if ":" not in resp:
+        if b":" not in resp:
             raise errors.RadioError("Unexpected response from radio")
-        addr, _data = resp.split(":", 1)
-        data = ""
-        for i in range(0, len(_data), 2):
-            data += chr(int(_data[i:i+2], 16))
+        addr, _data = resp.split(b":", 1)
+
+        data = codecs.decode(_data, "hex")
 
         if len(data) != 16:
             LOG.debug("Response was:")
-            LOG.debug("|%s|")
+            LOG.debug("|%s|" % _data)
             LOG.debug("Which I converted to:")
             LOG.debug(util.hexprint(data))
             raise Exception("Radio returned less than 16 bytes")
@@ -150,10 +149,10 @@ class AlincoStyleRadio(chirp_common.CloneModeRadio):
                 status.msg = "Downloading from radio"
                 self.status_fn(status)
 
-        self._send("AL~E\r\n")
+        self._send(b"AL~E\r\n")
         self._read(20)
 
-        return memmap.MemoryMap(data)
+        return memmap.MemoryMapBytes(data)
 
     def _identify(self):
         for _i in range(0, 3):
@@ -172,9 +171,9 @@ class AlincoStyleRadio(chirp_common.CloneModeRadio):
             raise Exception("Addr 0x%04x not on 16-byte boundary" % addr)
 
         _data = self._mmap[addr:addr+16]
-        data = "".join(["%02X" % ord(x) for x in _data])
+        data = codecs.encode(_data, "hex").upper()
 
-        cmd = "AL~F%04XW%s\r\n" % (addr, data)
+        cmd = b"AL~F%04XW%s\r\n" % (addr, data)
         self._send(cmd)
 
     def _upload(self, limit):
@@ -192,7 +191,7 @@ class AlincoStyleRadio(chirp_common.CloneModeRadio):
                 status.msg = "Uploading to radio"
                 self.status_fn(status)
 
-        self._send("AL~E\r\n")
+        self._send(b"AL~E\r\n")
         self.pipe._read(20)
 
     def process_mmap(self):
@@ -556,20 +555,18 @@ class DJ175Radio(DRx35Radio):
         if addr % 16:
             raise Exception("Addr 0x%04x not on 16-byte boundary" % addr)
 
-        cmd = "AL~F%04XR\r\n" % addr
+        cmd = b"AL~F%04XR\r\n" % addr
         self._send(cmd)
 
         _data = self._read(34).strip()
         if len(_data) == 0:
             raise errors.RadioError("No response from radio")
 
-        data = ""
-        for i in range(0, len(_data), 2):
-            data += chr(int(_data[i:i+2], 16))
+        data = codecs.decode(_data, "hex")
 
         if len(data) != 16:
             LOG.debug("Response was:")
-            LOG.debug("|%s|")
+            LOG.debug("|%s|" % _data)
             LOG.debug("Which I converted to:")
             LOG.debug(util.hexprint(data))
             raise Exception("Radio returned less than 16 bytes")
